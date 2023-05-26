@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+'''
+Lê, normaliza e plota diversos espectros de uma mesma estrela num único gráfico, e plota um gráfico relacionando o dia juliano à largura equivalente de H-alpha.
+'''
+
+import astropy.io.fits as pyfits
+import numpy as np
+import matplotlib.pyplot as plt
+from glob import glob
+
+#Primeiro colocar todos os espectros numa lista
+Flist = glob('*.fits')
+plt.figure()
+EWlist = [] #Largura equivalente
+HJDlist = [] #dia juliano com correção heliocêntrica
+
+#Ler, normalizar e plotar
+
+for i in Flist:
+ fits = pyfits.open(i)
+ dados = fits[1].data
+ comp = dados['WAVE']
+ fluxo = dados['FLUX']
+
+#Normalização
+ comp0 = 6562.8 #lambda central
+ comp1 = 6519.0 
+ comp2 = 6606.5
+ keep = (comp >= comp1) * (comp <= comp2)
+ comp = comp[keep]
+ fluxo = fluxo[keep]
+ try:
+  borda_esquerda = comp < comp.min() + 5
+  borda_direita = comp > comp.max() - 5
+  f1 = np.median(fluxo[borda_esquerda])
+  f2 = np.median(fluxo[borda_direita])
+  comp1 = comp[0]
+  comp2 = comp[-1]
+  fc = f1 + ((f2-f1)/ (comp2-comp1))*(comp - comp1)
+  f_norm = fluxo/fc 
+  
+
+ except:
+  Flist.remove(i)
+  continue
+ plt.title('Espectro normalizado da estrela V442 And')
+ plt.xlabel('Comprimento de onda($\AA$)')
+ plt.ylabel('Fluxo normalizado') 
+ plt.plot(comp, f_norm) 
+ 
+ EW = np.trapz(1-f_norm, x=comp) #integral
+ EWlist.append(EW)
+ '''
+para 66 Oph:
+
+ if EW>-0.5 and EW<0.5:
+  EWlist.remove(EW)
+ else:
+  continue
+ '''
+ HJD = float(fits[0].header['MID-HJD'])
+ HJDlist.append(HJD)
+ 
+plt.savefig('Espectros da estrela V442 And.png')
+#plt.show()
+
+#Grafico HJD x EW
+HJDlist = np.array(HJDlist)
+plt.figure()
+plt.title('Relação Dia Juliano X Largura Equivalente da estrela V442 And')
+plt.xlabel('Dia Juliano Heliocêntrico - 2400000')
+plt.ylabel('Largura equivalente')
+plt.ylim(plt.ylim(-3,10)[::-1])
+plt.scatter(HJDlist - 2400000, EWlist)
+plt.savefig('V442_Dia_Juliano_x_EW.png')
+plt.show()
