@@ -1,0 +1,49 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from astropy import units as u
+from astropy.analytic_functions import blackbody_lambda
+import astropy.io.fits as pf
+from astropy.table import Table
+import math
+
+espectros = ['J_PASP_110_863_f5v.dat.fits','J_PASP_110_863_g2v.dat.fits','J_PASP_110_863_k5v.dat.fits','J_PASP_110_863_m0v.dat.fits']
+
+T=[6531.31,5636.38,4187.94,3801.89]
+def lercabecalho(arq):
+
+ hdu = pf.open(arq)
+ head = hdu[1].header
+ data = Table(hdu[1].data)
+ lam = data['lambda']
+ flux = data['nflam']
+ err = data['sdnflam']
+ flu = flux[np.where(flux != 0.0)]
+ la=lam[np.where(flux!=0)]
+ er=err[np.where(flux!=0)]
+ print head
+ print data
+ return la,flu,er
+ 
+def normaliza(lamb, fl,T):
+ cn = 4*math.pi*((blackbody_lambda(lamb*u.AA,T*u.K))/(blackbody_lambda(5556*u.AA,T*u.K)))
+ a=fl/cn
+ bb = a[np.where(np.isnan(a)==False)]
+ return bb
+col=['navy','crimson','green','teal']
+star=['F5 V','G2 V','K5 V','M0 V']
+idt=['nF5v.png', 'nG2V.png','nK5V.png', 'nM0V.png']
+for i in range(4):
+ l,f,e = lercabecalho(espectros[i])
+ fn = normaliza(l, f, T[i])
+ y=np.ones(l.shape)
+ plt.xlabel(u'Wavelength ($\AA$)')
+ plt.ylabel(u'Fluxo Normalizado ($\mathrm{\\frac{F_{\lambda}}{F_{\lambda ,0}}}$)')
+ plt.ylim(0,1.5)
+ plt.plot(l,fn,lw=0.8,color=col[i])
+ plt.hold('on')
+ plt.plot(l,y,ls='--',color='grey')
+ plt.title(star[i])
+ #plt.text(' $T_{eff}=$'+str(T[i]))
+ plt.legend(['Espectro normalizado pelo continuo','linha do continuo $\mathrm{\\frac{F_{\lambda}}{F_{\lambda ,0}}}=1$'])
+ plt.savefig(idt[i])
+ #plt.show()
