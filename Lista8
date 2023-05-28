@@ -1,0 +1,263 @@
+#Quebrar o arquivo em vários outros, especificando cada etapa do exercício.
+
+import numpy as np
+import matplotlib.pyplot as plt
+from astropy import units as u
+from astropy.analytic_functions import blackbody_lambda
+import astropy.io.fits as pf
+from matplotlib.colors import LogNorm
+
+stars=['F4V_HD87822.fits','G1.5V_HD20619.fits','K5V_HD36003.fits','M0.5V_HD209290.fits']
+l=['F4.png','G1.png','K5.png','M0.png']
+idt=['HD 87822 (F4 V)', 'HD 20619 (G1.5 V)','HD 36003 (K5 V)', 'HD 209290 (M0.5 V)']
+col=['navy','crimson','green','teal']
+flambdall=[4.73311*10**-12, 1.92717*10**-11, 6.23593*10**-12, 5.3286*10**-13] #olhar de novo e escolher outro lambda pq esse ta dando eh problema vi
+a=[10, 1, 4.75, 1]
+Teff=[6586,5703,4647,3580]
+lambdall=[2.01732,1.05658,1.98832,3.62321]
+star=['F4','G1','K5','M0']
+
+for i in range(4):
+
+ hdu = pf.open(stars[i])
+ head = hdu[0].header
+ print head
+ 
+ data = hdu[0].data
+ x=data[0]
+ X=x[np.where(np.isnan(x)==False)]
+ y=data[1]
+ yerr=data[2]
+ fig=plt.figure()
+ fig.add_subplot(111)
+ plt.xlabel(u'Wavelength ($\mathrm{\mu m}$)')
+ plt.ylabel(u'Fluxo normalizado ($\mathrm{\\frac{F_\lambda}{F_{\lambda^l}}})$')
+ plt.title(idt[i])
+ plt.errorbar(x,y/flambdall[i],yerr=yerr,fmt='--',color=col[i],linewidth=0.2)
+ plt.hold('on')
+ plt.loglog(x,y/flambdall[i],ls='-',color=col[i],linewidth=0.2)
+ plt.loglog(X,blackbody_lambda(X*u.um,Teff[i]*u.K)/blackbody_lambda(lambdall[i]*u.um,Teff[i]*u.K),color='k')
+ plt.legend(['Espectro da estrela','Curva de corpo negro da estrela','Erro do fluxo'])
+ if star[i] == 'F4':
+  plt.text(2.4,3.1,'$\lambda^l = 2.01732\,\mu m$', fontsize=12)
+ elif star[i] == 'G1':
+  plt.text(2.5,0.37,'$\lambda^l = 1.05658\,\mu m$',fontsize=12)
+ elif star[i] == 'K5':
+  plt.text(2.35,1.79,'$\lambda^l = 1.98832\,\mu m$',fontsize=12)
+ elif star[i] == 'M0':
+  plt.text(2.7,8,'$\lambda^l = 3.62321\,\mu m$',fontsize=12)
+ plt.savefig(l[i])
+ plt.show()
+
+
+atm1=np.genfromtxt('atran.plt.0.85-1.5.dat',usecols=(1))
+atm11=np.genfromtxt('atran.plt.0.85-1.5.dat',usecols=(2))
+atm2=np.genfromtxt('atran.plt.1.5-2.4.dat',usecols=(1))
+atm21=np.genfromtxt('atran.plt.1.5-2.4.dat',usecols=(2))
+atm3=np.genfromtxt('atran.plt.2.4-4.dat',usecols=(1))
+atm31=np.genfromtxt('atran.plt.2.4-4.dat',usecols=(2))
+atm4=np.genfromtxt('atran.plt.4-7.2.dat',usecols=(1))
+atm41=np.genfromtxt('atran.plt.4-7.2.dat',usecols=(2))
+atm5=np.genfromtxt('atran.plt.7.2-12.dat',usecols=(1))
+atm51=np.genfromtxt('atran.plt.7.2-12.dat',usecols=(2))
+atm6=np.genfromtxt('atran.plt.12-22.dat',usecols=(1))
+atm61=np.genfromtxt('atran.plt.12-22.dat',usecols=(2))
+atm7=np.genfromtxt('atran.plt.22-36.dat',usecols=(1))
+atm71=np.genfromtxt('atran.plt.22-36.dat',usecols=(2))
+'''
+j=['f4t.png','gt.png','kt.png','mt.png']
+maximos=[6.2*10**-11,3.24*10**-11,3.3*10**-11,1.5*10**-11]
+for i in range(4):
+ hdu = pf.open(stars[i])
+ data = hdu[0].data
+ x=data[0]
+ y=data[1]
+ yerr=data[2]
+ x1=atm1
+ y1=atm11
+ x2=atm2
+ y2=atm21
+ x3=atm3
+ y3=atm31
+ x4=atm4
+ y4=atm41
+ plt.xlabel(u'Wavelength ($\mu m$)')
+ plt.ylabel(u'Flux (10$^\mathrm{-11}$ Wm$^\mathrm{-2}$ $\mu$ m$^\mathrm{-1}$)')
+ plt.title(idt[i])
+ plt.errorbar(x,y/(maximos[i]),yerr=yerr,fmt='--',color=col[i],linewidth=0.2)
+ plt.hold('on')
+ plt.loglog(x,y/(maximos[i]),ls='-',color=col[i],linewidth=0.2)
+ plt.loglog(x1*u.um,y1,color='pink',ls='-',linewidth=0.2)
+ plt.loglog(x2*u.um,y2,color='pink',ls='-',linewidth=0.2)
+ plt.loglog(x3*u.um,y3,color='pink',ls='-',linewidth=0.2)
+ plt.loglog(x4*u.um,y4,color='pink',ls='-',linewidth=0.2)
+ plt.xlim(xmax=6)
+ plt.legend(['a','b','c'])
+ plt.savefig(j[i])
+ plt.show()
+
+'''
+
+T = [30000, 15000, 8500, 7000, 5000, 4000, 3000]
+color=['orangered','green','teal','purple','brown','fuchsia','blue']
+x = np.arange(0, 2100000)
+ax1 = plt.subplot(311)
+ax1.set_ylim(0,1)
+ax1.set_xlim(300,2100000)
+ax1.set_ylabel('B$_\lambda$(T) (s$^\mathrm{-1}$ cm$^\mathrm{-2}$ A$^\mathrm{-1}$ Sr$^\mathrm{-1}$)')
+ax1.set_title('Radiacao de corpo negro/Curvas de transmissao')
+ax1.semilogx(x,blackbody_lambda(x*u.AA,T[6])/10**6, color=color[6])
+for i in range(6):
+ ax1.plot(x,blackbody_lambda(x*u.AA,T[i])/10**6,color=color[i])
+ax1.annotate('3000 K', xy=(10**3.8,0.15),fontsize=8,color='blue')
+ax1.text(10**3.55,0.45, '4000 K', rotation=55, fontsize=8,color='fuchsia')
+ax1.text(10**3.4,0.6, '5000 K', rotation=76, fontsize=8,color='brown')
+ax1.text(1390,0.7, '7000 K', rotation=85, fontsize=8,color='purple')
+ax1.text(950,0.8, '8500 K', rotation=85, fontsize=8,color='teal')
+ax1.text(400,0.9, '15000 K', rotation=85, fontsize=8,color='green')
+ax1.text(25126,0.6, '30000 K', rotation=282, fontsize=8,color='orangered')
+
+ax2 = plt.subplot(312, sharex=ax1)
+ax2.set_xlim(300,2100000)
+
+
+jmass = np.genfromtxt('2MASS_2MASS.J.dat')
+Jmass = jmass.T
+hmass = np.genfromtxt('2MASS_2MASS.H.dat')
+Hmass= hmass.T
+Ksmass = np.genfromtxt('2MASS_2MASS.Ks.dat')
+Ksmass= Ksmass.T
+wise1 = np.genfromtxt('WISE_WISE.W1.dat')
+wise1 = wise1.T
+wise2 = np.genfromtxt('WISE_WISE.W2.dat')
+wise2 = wise2.T
+wise3 = np.genfromtxt('WISE_WISE.W3.dat')
+wise3 = wise3.T
+wise4 = np.genfromtxt('WISE_WISE.W4.dat')
+wise4 = wise4.T
+spz1 = np.genfromtxt('Spitzer_IRAC.I1.dat')
+spz1 = spz1.T
+spz2= np.genfromtxt('Spitzer_IRAC.I2.dat')
+spz2 = spz2.T
+spz3 = np.genfromtxt('Spitzer_IRAC.I3.dat')
+spz3 = spz3.T
+spz4 = np.genfromtxt('Spitzer_IRAC.I4.dat')
+spz4 = spz4.T
+spzm1 = np.genfromtxt('Spitzer-MIPS.24mu.dat')
+spzm1 = spzm1.T
+spzm2 = np.genfromtxt('Spitzer-MIPS.70mu.dat')
+spzm2 = spzm2.T
+spzm3 = np.genfromtxt('Spitzer-MIPS.160mu.dat')
+spzm3 = spzm3.T
+iras100 = np.genfromtxt('IRAS_IRAS.100mu.dat')
+iras100 = iras100.T
+iras60 = np.genfromtxt('IRAS_IRAS.60mu.dat')
+iras60 = iras60.T
+iras25 = np.genfromtxt('IRAS_IRAS.25mu.dat')
+iras25 = iras25.T
+iras12 = np.genfromtxt('IRAS_IRAS.12mu.dat')
+iras12 = iras12.T
+juk = np.genfromtxt('UKIRT_UKIDSS.J.dat')
+juk = juk.T
+kuk = np.genfromtxt('UKIRT_UKIDSS.K.dat')
+kuk = kuk.T
+yuk = np.genfromtxt('UKIRT_UKIDSS.Y.dat')
+yuk = yuk.T
+zuk = np.genfromtxt('UKIRT_UKIDSS.Z.dat')
+zuk = zuk.T
+huk = np.genfromtxt('UKIRT_UKIDSS.H.dat')
+huk = huk.T
+hp = np.genfromtxt('Hipparcos_Hipparcos.Hp.dat')
+hp= hp.T
+hpbes = np.genfromtxt('Hipparcos_Hipparcos.Hp_bes.dat')
+hpbes= hpbes.T
+hpmvb = np.genfromtxt('Hipparcos_Hipparcos.Hp_MvB.dat')
+hpmvb = hpmvb.T
+gaiag = np.genfromtxt('GAIA_GAIA0.G.dat')
+gaiag = gaiag.T
+gaiagbp = np.genfromtxt('GAIA_GAIA0.Gbp.dat')
+gaiagbp = gaiagbp.T
+gaiagrp = np.genfromtxt('GAIA_GAIA0.Grp.dat')
+gaiagrp = gaiagrp.T
+iphasgi = np.genfromtxt('INT_IPHAS.gI.dat')
+iphasgi = iphasgi.T
+iphasgR = np.genfromtxt('INT_IPHAS.gR.dat')
+iphasgR = iphasgR.T
+iphasha = np.genfromtxt('INT_IPHAS.Ha.dat')
+iphasha = iphasha.T
+keplerk = np.genfromtxt('Kepler_Kepler.K.dat')
+keplerk = keplerk.T
+gsdss = np.genfromtxt('SLOAN_SDSS.g.dat')
+gsdss = gsdss.T
+isdss = np.genfromtxt('SLOAN_SDSS.i.dat')
+isdss = isdss.T
+rsdss = np.genfromtxt('SLOAN_SDSS.r.dat')
+rsdss = rsdss.T
+usdss = np.genfromtxt('SLOAN_SDSS.u.dat')
+usdss = usdss.T
+zsdss = np.genfromtxt('SLOAN_SDSS.z.dat')
+zsdss = zsdss.T
+galexf = np.genfromtxt('GALEX_GALEX.FUV.dat')
+galexf = galexf.T
+galexn = np.genfromtxt('GALEX_GALEX.NUV.dat')
+galexn = galexn.T
+
+
+ax2.plot(Jmass[0],Jmass[1], color='coral', label='2MASS') 
+mass = [Hmass,Ksmass]
+for i in mass:
+ ax2.plot(i[0],i[1], color='coral') 
+ax2.plot(hp[0],hp[1], color='crimson', label='Hipparcos')
+hipparcos = [hpbes,hpmvb]
+for i in hipparcos:
+ ax2.plot(i[0],i[1], color='crimson')
+ax2.plot(gaiag[0],gaiag[1], color='orchid', label='GAIA')
+gaia = [gaiagbp,gaiagrp]
+for i in gaia:
+ ax2.plot(i[0],i[1], color='orchid')
+ax2.plot(huk[0],huk[1], color='maroon',label='UKIDSS')
+ukidss = [juk,zuk,yuk,kuk] 
+for i in ukidss:
+ ax2.plot(i[0],i[1], color='maroon')
+ax2.plot(iphasgi[0],iphasgi[1], color='indigo',label='IPHAS')
+iphas = [iphasha,iphasgR]
+for i in iphas:
+ ax2.plot(i[0],i[1], color='indigo')
+ax2.plot(galexf[0],galexf[1], color='lightgreen', label='GALEX') 
+ax2.plot(galexn[0],galexn[1], color='lightgreen')
+ax2.plot(keplerk[0],keplerk[1], color='gold',label='Kepler')
+ax2.plot(wise1[0],wise1[1], color='red',label='WISE')
+wise=[wise2,wise3,wise4]
+for i in wise:
+ ax2.plot(i[0],i[1], color='red') 
+ax2.plot(spz1[0],spz1[1], color='c',label='Spitzer')
+spitzer=[spz2,spz3,spz4,spzm1,spzm2,spzm3]
+for i in spitzer:
+ ax2.plot(i[0],i[1], color='c')
+ax2.plot(iras100[0],iras100[1], color='grey',label='IRAS')
+iras = [iras60,iras25,iras12] 
+for i in iras:
+ ax2.plot(i[0],i[1], color='grey')
+ax2.plot(gsdss[0],gsdss[1], color='teal',label='SDSS') 
+sdss = [isdss,rsdss,usdss,zsdss]
+for i in sdss:
+ ax2.plot(i[0],i[1], color='teal')
+ax2.legend(fontsize=6,ncol=2,loc=2,borderaxespad=0.1,frameon=False) #o 2 coloca a legenda upper left
+
+ax3=plt.subplot(313)
+#ax3.set_xlim()
+ax3.set_xlabel('Wavelength ($\AA$)')
+x=[atm1,atm2,atm3,atm4,atm5,atm6,atm7]
+y=[atm11,atm21,atm31,atm41,atm51,atm61,atm71]
+ax3.plot(x[6],y[6],ls='-',color='lightgreen')
+ax3.hold('on')
+ax3.plot(x[5],y[5],ls='-',color='lightgreen')
+ax3.plot(x[4],y[4],ls='-',color='lightgreen') 
+ax3.plot(x[3],y[3],ls='-',color='lightgreen')
+ax3.plot(x[2],y[2],ls='-',color='lightgreen')
+ax3.plot(x[1],y[1],ls='-',color='lightgreen')
+ax3.plot(x[0],y[0],ls='-',color='lightgreen')
+ax3.legend(['Curva de transmissao da atmosfera'],fontsize=6,loc=1)
+plt.tight_layout(pad=0.3)
+#plt.show()
+plt.savefig('corponegro_transmissao-atmosfera.png')
