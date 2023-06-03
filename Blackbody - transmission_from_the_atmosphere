@@ -7,6 +7,7 @@ from astropy.analytic_functions import blackbody_lambda
 import astropy.io.fits as pf
 from matplotlib.colors import LogNorm
 
+
 stars=['F4V_HD87822.fits','G1.5V_HD20619.fits','K5V_HD36003.fits','M0.5V_HD209290.fits'] #star fits files
 l=['F4.png','G1.png','K5.png','M0.png'] #names with which the generated graphics will be saved
 idt=['HD 87822 (F4 V)', 'HD 20619 (G1.5 V)','HD 36003 (K5 V)', 'HD 209290 (M0.5 V)'] #star names
