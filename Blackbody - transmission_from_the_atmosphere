@@ -1,5 +1,3 @@
-#Quebrar o arquivo em vários outros, especificando cada etapa do exercício.
-
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy import units as u
@@ -7,15 +5,17 @@ from astropy.analytic_functions import blackbody_lambda
 import astropy.io.fits as pf
 from matplotlib.colors import LogNorm
 
-stars=['F4V_HD87822.fits','G1.5V_HD20619.fits','K5V_HD36003.fits','M0.5V_HD209290.fits']
-l=['F4.png','G1.png','K5.png','M0.png']
-idt=['HD 87822 (F4 V)', 'HD 20619 (G1.5 V)','HD 36003 (K5 V)', 'HD 209290 (M0.5 V)']
-col=['navy','crimson','green','teal']
-flambdall=[4.73311*10**-12, 1.92717*10**-11, 6.23593*10**-12, 5.3286*10**-13] #olhar de novo e escolher outro lambda pq esse ta dando eh problema vi
+stars=['F4V_HD87822.fits','G1.5V_HD20619.fits','K5V_HD36003.fits','M0.5V_HD209290.fits'] #star fits files
+l=['F4.png','G1.png','K5.png','M0.png'] #names with which the generated graphics will be saved
+idt=['HD 87822 (F4 V)', 'HD 20619 (G1.5 V)','HD 36003 (K5 V)', 'HD 209290 (M0.5 V)'] #star names
+col=['navy','crimson','green','teal'] #colors to use in graphics
+flambdall=[4.73311*10**-12, 1.92717*10**-11, 6.23593*10**-12, 5.3286*10**-13] #flux at the wavelength chosen to be the basis of the normalization, for each star.
 a=[10, 1, 4.75, 1]
-Teff=[6586,5703,4647,3580]
-lambdall=[2.01732,1.05658,1.98832,3.62321]
-star=['F4','G1','K5','M0']
+Teff=[6586,5703,4647,3580] #effective temperature of each star, literature values
+lambdall=[2.01732,1.05658,1.98832,3.62321] #wavelength chosen to be the basis of the normalization, for each star
+star=['F4','G1','K5','M0'] #star types
+
+#Read the header of the 'fits' file of main sequence stars of types F, G, K and M.
 
 for i in range(4):
 
@@ -23,11 +23,18 @@ for i in range(4):
  head = hdu[0].header
  print head
  
+ #reads the table containing the spectrum of each star, excluding null values
+ 
  data = hdu[0].data
  x=data[0]
  X=x[np.where(np.isnan(x)==False)]
  y=data[1]
  yerr=data[2]
+ 
+ #generates a figure containing two graphs: 
+ #the first, a loglog graph of the star's normalized spectrum, with error bars, 
+ #and, in the second, blackbody curve for the wavelength used as the basis for normalizing the spectrum, also normalized.
+ 
  fig=plt.figure()
  fig.add_subplot(111)
  plt.xlabel(u'Wavelength ($\mathrm{\mu m}$)')
@@ -49,7 +56,9 @@ for i in range(4):
  plt.savefig(l[i])
  plt.show()
 
+##Working with atmospheric transmission curves
 
+#Reads transmission curves 
 atm1=np.genfromtxt('atran.plt.0.85-1.5.dat',usecols=(1))
 atm11=np.genfromtxt('atran.plt.0.85-1.5.dat',usecols=(2))
 atm2=np.genfromtxt('atran.plt.1.5-2.4.dat',usecols=(1))
@@ -65,6 +74,10 @@ atm61=np.genfromtxt('atran.plt.12-22.dat',usecols=(2))
 atm7=np.genfromtxt('atran.plt.22-36.dat',usecols=(1))
 atm71=np.genfromtxt('atran.plt.22-36.dat',usecols=(2))
 '''
+
+#Normalizes each spectrum to its maximum value and plot the spectrum normalized by the 
+#maximum value and the transmission curve from the atmosphere on the same graph.
+
 j=['f4t.png','gt.png','kt.png','mt.png']
 maximos=[6.2*10**-11,3.24*10**-11,3.3*10**-11,1.5*10**-11]
 for i in range(4):
@@ -97,6 +110,10 @@ for i in range(4):
  plt.show()
 
 '''
+##Generates an image containing 3 graphs: one of blackbody radiation, one containing photometric systems, 
+#and the other containing transmission curves from the atmosphere
+
+#Blackbody Radiation Curve
 
 T = [30000, 15000, 8500, 7000, 5000, 4000, 3000]
 color=['orangered','green','teal','purple','brown','fuchsia','blue']
@@ -116,6 +133,9 @@ ax1.text(1390,0.7, '7000 K', rotation=85, fontsize=8,color='purple')
 ax1.text(950,0.8, '8500 K', rotation=85, fontsize=8,color='teal')
 ax1.text(400,0.9, '15000 K', rotation=85, fontsize=8,color='green')
 ax1.text(25126,0.6, '30000 K', rotation=282, fontsize=8,color='orangered')
+
+
+#photometric systems
 
 ax2 = plt.subplot(312, sharex=ax1)
 ax2.set_xlim(300,2100000)
@@ -202,7 +222,6 @@ galexf = galexf.T
 galexn = np.genfromtxt('GALEX_GALEX.NUV.dat')
 galexn = galexn.T
 
-
 ax2.plot(Jmass[0],Jmass[1], color='coral', label='2MASS') 
 mass = [Hmass,Ksmass]
 for i in mass:
@@ -243,6 +262,8 @@ sdss = [isdss,rsdss,usdss,zsdss]
 for i in sdss:
  ax2.plot(i[0],i[1], color='teal')
 ax2.legend(fontsize=6,ncol=2,loc=2,borderaxespad=0.1,frameon=False) #o 2 coloca a legenda upper left
+
+#Atmosphere transmission curves
 
 ax3=plt.subplot(313)
 #ax3.set_xlim()
