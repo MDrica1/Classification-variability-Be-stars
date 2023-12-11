@@ -3,7 +3,7 @@
 
 For my undergraduate thesis in astrophysics, I conducted a statistical study on the variability of the H-alpha line in Be stars.
 
-RESUME
+## Resume
 
 Classical Be stars are B-type stars, but also late-O or recent A-type stars, which present
 or have already presented one or more lines of the Balmer series in emission. These stars
@@ -19,12 +19,12 @@ intensity of the line (EW), v sini, and spectral type. We also saw that the spec
 relates to these same quantities, with stars with greater v sini, EW and standard deviation of
 EW, almost all recent B-type stars.
 
-OBJECTIVE
+## Objective
 
 The objective of this work is to conduct a study on the category of stars known as Classical Be stars, using existing spectra made publicly available by the BeSS database. More specifically, it aims to investigate the variability of the Hα line flux and its potential correlation with fundamental properties of the stars.
 
 
-METODOLOGY
+## Metodology
 
 
 In the codes contained in this repository, I computationally performed the steps described below, obtaining data for the construction of a table and graphs that represent the analysis based on data obtained from: http://basebe.obspm.fr/basebe/
@@ -53,13 +53,13 @@ For the normalization of the line profile, first, we obtained the flux and wavel
 
  Finally, we obtained the normalized flux by dividing the flux by the continuum flux.
 
- F Test
+ ### F Test
 
  For the application of the F-test, we used the temporal variance of the EW measurement and the uncertainty of EW (sigmaEW).
 
 To determine sigmaEW, we used two methods. Method 1 follows the approach adopted by Jones et al. (2011), where sigmaEW = 3% EW. Method 2 involves a statistical procedure, using a bootstrapping method.
 
-STATISTICAL METHOD
+### Statistical Method
 
 From the uncertainty propagation formula, we arrived at the following formula for the uncertainty of the normalized flux:
 
@@ -75,7 +75,7 @@ which generates a sequence of numbers in a Gaussian distribution. Subsequently, 
 
 To measure the reliability of the statistical test result, we used the confidence level \(C\), which was defined as C = 1 - p, where p is the significance level (p-value).
 
-RESULTS
+## Results
 
 As a result, we obtained a series of plots representing our analysis.
 
