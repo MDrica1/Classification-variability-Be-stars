@@ -1,5 +1,5 @@
 # Variability of the Hα line in Be stars: a statistical study.
-(2022 - 2023)
+The present study was carried out in 2022.
 
 For my undergraduate thesis in astrophysics, I conducted a statistical study on the variability of the H-alpha line in Be stars.
 
