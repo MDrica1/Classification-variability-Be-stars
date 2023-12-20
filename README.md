@@ -4,6 +4,7 @@ The present study was carried out in 2022.
 
 I conducted a statistical study on the variability of the H-alpha line in Be stars.
 
+For more details, see the file available in PDF in this repository
 
 ## Data visualization, data analysis and statistics
 
