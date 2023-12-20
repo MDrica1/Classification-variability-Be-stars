@@ -1,7 +1,15 @@
 # Variability of the Hα line in Be stars: a statistical study.
+
 The present study was carried out in 2022.
 
-For my undergraduate thesis in astrophysics, I conducted a statistical study on the variability of the H-alpha line in Be stars.
+I conducted a statistical study on the variability of the H-alpha line in Be stars.
+
+
+## Data visualization, data analysis and statistics
+
+I constructed a variety of graphs of different types in this work, and here you can see at least one example of each type.
+
+For more data visualization examples using Python libraries, also consult the README of the Stellar-Visualization-Spectra-Blackbody-Surveys-and-Atmosphere repository.
 
 ## Resume
 
